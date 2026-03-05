@@ -5,8 +5,7 @@ import { CartProvider } from "@/components/CartProvider";
 import { ConditionalHolmesScript } from "@/components/ConditionalHolmesScript";
 import { StoreProvider } from "@/components/StoreContext";
 import { AuthProvider } from "@/components/AuthProvider";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
+import { ConditionalLayout } from "@/components/ConditionalLayout";
 
 const siteName =
   process.env.NEXT_PUBLIC_SITE_NAME ?? "Hippo Ecom";
@@ -36,13 +35,9 @@ export default function RootLayout({
       >
         <StoreProvider>
           <AuthProvider>
-            <CartProvider>
-              <Nav />
-            <main className="min-h-[calc(100vh-3.5rem)] flex flex-col">
-              {children}
-              <Footer />
-            </main>
-            </CartProvider>
+        <CartProvider>
+              <ConditionalLayout>{children}</ConditionalLayout>
+        </CartProvider>
           </AuthProvider>
         </StoreProvider>
         <Suspense fallback={null}>
