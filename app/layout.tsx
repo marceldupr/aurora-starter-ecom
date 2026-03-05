@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Script from "next/script";
-import { getHolmesScriptUrl } from "@aurora-studio/sdk";
+import { Suspense } from "react";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
+import { ConditionalHolmesScript } from "@/components/ConditionalHolmesScript";
 import { StoreProvider } from "@/components/StoreContext";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Nav } from "@/components/Nav";
@@ -45,15 +45,9 @@ export default function RootLayout({
             </CartProvider>
           </AuthProvider>
         </StoreProvider>
-        {process.env.NEXT_PUBLIC_AURORA_API_URL && process.env.NEXT_PUBLIC_TENANT_SLUG && (
-          <Script
-            src={getHolmesScriptUrl(
-              process.env.NEXT_PUBLIC_AURORA_API_URL,
-              process.env.NEXT_PUBLIC_TENANT_SLUG
-            )}
-            strategy="afterInteractive"
-          />
-        )}
+        <Suspense fallback={null}>
+          <ConditionalHolmesScript />
+        </Suspense>
       </body>
     </html>
   );

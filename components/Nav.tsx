@@ -56,9 +56,15 @@ export function Nav() {
               </Link>
               <Link
                 href="/demo"
-                className="text-sm text-aurora-primary hover:text-aurora-primary-dark font-semibold transition-colors"
+                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
               >
                 Demo
+              </Link>
+              <Link
+                href="/simulate"
+                className="text-sm text-aurora-primary hover:text-aurora-primary-dark font-semibold transition-colors"
+              >
+                Simulate
               </Link>
             </div>
           </div>

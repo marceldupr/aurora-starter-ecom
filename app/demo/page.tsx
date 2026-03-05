@@ -75,12 +75,20 @@ export default function DemoPage() {
     <div className="min-h-screen bg-aurora-bg">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
         <div className="mb-16">
-          <Link
-            href="/"
-            className="text-aurora-accent hover:underline text-sm font-medium mb-6 inline-block"
-          >
-            ← Back to store
-          </Link>
+          <div className="flex items-center gap-4 mb-6">
+            <Link
+              href="/"
+              className="text-aurora-primary hover:underline text-sm font-medium"
+            >
+              ← Back to store
+            </Link>
+            <Link
+              href="/simulate"
+              className="text-aurora-primary hover:underline text-sm font-medium"
+            >
+              Side-by-side simulation →
+            </Link>
+          </div>
           <h1
             className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-white mb-4"
             data-testid="demo-page-title"
