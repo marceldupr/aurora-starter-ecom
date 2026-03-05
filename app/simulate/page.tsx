@@ -258,6 +258,7 @@ export default function SimulatePage() {
   const [holmesInitMs, setHolmesInitMs] = useState(3500);
   const [typingDelayMs, setTypingDelayMs] = useState(80);
   const [stepPauseMs, setStepPauseMs] = useState(300);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const simulationSteps = getStepsForScenario(scenario);
   const holmesQuery = buildHolmesQuery(scenario, { timeOfDay, season, dayOfWeek, deviceType, referrer });
@@ -338,45 +339,56 @@ export default function SimulatePage() {
 
   return (
     <div className="fixed inset-0 z-50 min-h-screen bg-slate-900 text-white flex flex-col">
-      <header className="border-b border-slate-700">
-        <div className="flex items-center justify-between px-4 py-3 flex-wrap gap-2">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm text-slate-400 hover:text-white">
+      <header className="border-b border-slate-700 shrink-0">
+        <div className="flex items-center justify-between gap-4 px-4 py-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <Link href="/" className="text-sm text-slate-400 hover:text-white shrink-0">
               ← Store
             </Link>
-            <h1 className="font-semibold text-lg">Holmes Simulation</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 text-sm min-w-[180px]">
+            <h1 className="font-semibold text-lg shrink-0">Holmes Simulation</h1>
+            <label className="flex items-center gap-2 text-sm min-w-0 shrink">
               <span className="text-slate-400 shrink-0">Scenario:</span>
               <select
                 value={scenario}
                 onChange={(e) => setScenario(e.target.value as ScenarioId)}
                 disabled={playing}
-                className="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm flex-1"
+                className="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm max-w-[160px]"
               >
                 {SCENARIOS.map((s) => (
                   <option key={s.id} value={s.id}>
-                    {s.label} — {s.description}
+                    {s.label}
                   </option>
                 ))}
               </select>
             </label>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
             <button
-            onClick={handleReset}
-            className="px-3 py-1.5 rounded bg-slate-700 hover:bg-slate-600 text-sm font-medium"
-          >
-            Reset
-          </button>
-          <button
-            onClick={handlePlay}
-            disabled={playing}
-            className="px-4 py-1.5 rounded bg-green-600 hover:bg-green-500 disabled:opacity-50 text-sm font-semibold"
-          >
-            {playing ? "Playing…" : "Play"}
-          </button>
+              type="button"
+              onClick={() => setSettingsOpen((o) => !o)}
+              className="px-3 py-1.5 rounded bg-slate-700 hover:bg-slate-600 text-sm font-medium"
+            >
+              {settingsOpen ? "Hide settings" : "Settings"}
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="px-3 py-1.5 rounded bg-slate-700 hover:bg-slate-600 text-sm font-medium"
+            >
+              Reset
+            </button>
+            <button
+              type="button"
+              onClick={handlePlay}
+              disabled={playing}
+              className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-50 text-sm font-semibold"
+            >
+              {playing ? "Playing…" : "Play"}
+            </button>
+          </div>
         </div>
-        </div>
+        {settingsOpen && (
+        <>
         <div className="px-4 pb-3 flex flex-wrap gap-6 items-end">
           <label className="flex flex-col gap-1 text-sm min-w-[140px]">
             <span className="text-slate-400">Speed: {speed}×</span>
@@ -505,6 +517,8 @@ export default function SimulatePage() {
             </select>
           </label>
         </div>
+        </>
+        )}
       </header>
 
       <div className="flex-1 flex min-h-0">
