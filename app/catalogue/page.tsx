@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, Suspense } from "react";
+import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AddToCartButton } from "@/components/AddToCartButton";
@@ -81,6 +81,12 @@ function CatalogueContent() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  const prevCategoryRef = useRef(category);
+  if (prevCategoryRef.current !== category) {
+    prevCategoryRef.current = category;
+    setPage(0);
+  }
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
@@ -165,7 +171,7 @@ function CatalogueContent() {
         </div>
 
         {/* Main content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 sm:min-w-[280px]">
           <h1 className="text-xl sm:text-2xl font-bold mb-4">Products</h1>
 
           {/* Mobile filter drawer */}

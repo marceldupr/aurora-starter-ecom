@@ -7,26 +7,32 @@ export const dynamic = "force-dynamic";
 
 export default function HomePage() {
   return (
-    <div className="max-w-6xl mx-auto">
-      <StoreContextBar />
-
-      {/* Holmes script injects personalized hero when data-holmes=home-hero exists */}
-      <div data-holmes="home-hero">
-        <HeroBanner />
+    <>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <StoreContextBar />
       </div>
 
-      <CategoryNav />
+      {/* Hero breaks out to full viewport width — no dark side bars */}
+      <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+        <div data-holmes="home-hero">
+          <HeroBanner />
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <CategoryNav />
 
       {/* Holmes script injects personalized sections (Meals, Top up, Inspiration) when data-holmes=home-sections exists */}
-      <div data-holmes="home-sections" className="px-4 sm:px-6 py-6" />
+      <div data-holmes="home-sections" className="py-6" />
 
-      <section className="py-12 px-4 sm:px-6">
+      <section className="py-12">
         <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
           Special Offers
           <span className="text-aurora-muted text-base font-normal">Store-specific promotions</span>
         </h2>
         <SpecialOffers />
       </section>
-    </div>
+      </div>
+    </>
   );
 }

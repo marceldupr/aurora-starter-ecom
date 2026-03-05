@@ -110,7 +110,7 @@ export function SearchDropdown({
                       <p className="font-medium truncate">
                         {hit.name ?? hit.title ?? hit.snippet ?? hit.recordId}
                       </p>
-                      {hit.price != null && (
+                      {hit.price != null && Number(hit.price) > 0 && (
                         <p className="text-sm text-aurora-accent">
                           {formatPrice(toCents(hit.price) ?? 0)}
                         </p>
