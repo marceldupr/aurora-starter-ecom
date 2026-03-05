@@ -5,8 +5,8 @@ import { CategoryNav } from "@/components/CategoryNav";
 
 export const dynamic = "force-dynamic";
 
-const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "Store";
-const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL;
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "Hippo Ecom";
+const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL ?? "https://vnawbscpsiwkqniibyya.supabase.co/storage/v1/object/public/placeholders/hippo-ecom.png";
 
 export default function HomePage() {
   return (

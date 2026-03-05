@@ -8,8 +8,8 @@ import { useStore } from "./StoreContext";
 import { useAuth } from "./AuthProvider";
 
 export function Nav() {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "Store";
-  const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL;
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "Hippo Ecom";
+  const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL ?? "https://vnawbscpsiwkqniibyya.supabase.co/storage/v1/object/public/placeholders/hippo-ecom.png";
   const { location, store } = useStore();
   const { user, loading } = useAuth();
 

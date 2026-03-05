@@ -9,7 +9,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 
 const siteName =
-  process.env.NEXT_PUBLIC_SITE_NAME ?? "Store";
+  process.env.NEXT_PUBLIC_SITE_NAME ?? "Hippo Ecom";
 
 export const metadata: Metadata = {
   title: siteName,
