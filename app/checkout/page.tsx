@@ -56,24 +56,46 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const res = await createCheckoutSession({
-        lineItems: items.map((i) => ({
-          productId: i.recordId,
-          tableSlug: i.tableSlug,
-          quantity: i.quantity,
-          sellByWeight: i.sellByWeight,
-          priceData: {
-            unitAmount: i.unitAmount,
-            currency: "GBP",
-            productData: { name: i.name },
-          },
-        })),
-        successUrl: `${origin}/checkout/success`,
-        cancelUrl: `${origin}/cart`,
-        deliverySlotId: selectedSlotId ?? undefined,
+      const holmes_session_id =
+        typeof window !== "undefined" ? window.holmes?.getSessionId?.() : undefined;
+      const holmes_mission_start_timestamp =
+        typeof window !== "undefined" ? window.holmes?.getMissionStartTimestamp?.() : undefined;
+
+      const res = await fetch("/api/checkout/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          successUrl: `${origin}/checkout/success`,
+          cancelUrl: `${origin}/cart`,
+          lineItems: items.map((i) => ({
+            productId: i.recordId,
+            tableSlug: i.tableSlug,
+            quantity: i.quantity,
+            sellByWeight: i.sellByWeight,
+            priceData: {
+              unitAmount: i.unitAmount,
+              currency: "GBP",
+              productData: { name: i.name },
+            },
+          })),
+          deliverySlotId: selectedSlotId ?? undefined,
+          ...(holmes_session_id && { holmes_session_id }),
+          ...(holmes_mission_start_timestamp != null && {
+            holmes_mission_start_timestamp: holmes_mission_start_timestamp,
+          }),
+        }),
       });
-      clearCart();
-      if (res.url) window.location.href = res.url;
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error((err as { error?: string }).error ?? "Checkout failed");
+      }
+      const data = (await res.json()) as { url?: string };
+      if (data.url) {
+        clearCart();
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
     } catch (e) {
       alert(e instanceof Error ? e.message : "Checkout failed");
     } finally {

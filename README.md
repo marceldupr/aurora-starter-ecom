@@ -2,7 +2,42 @@
 
 A full-featured retail storefront for Aurora Studio. Showcases Aurora capabilities: Meilisearch search, Holmes mission inference, delivery slots, per-store promotions, and multi-step checkout.
 
-**Aurora** is an all-in-one, no-code platform for stores, marketplaces, CRMs, and more.
+**Theme:** Dark mode by default. Set `NEXT_PUBLIC_THEME=light` for a light theme.
+
+---
+
+## Quick Start
+
+1. **Create or clone:**
+   - **Option A — From Studio:** Sign up at [Aurora](https://aurora.mandeville.digital), create a workspace from the "Hippo Ecom" template (`free-ecom`). Studio provisions the base schema; the storefront adds the full schema on first run.
+   - **Option B — Clone:**
+   ```bash
+   git clone https://github.com/marceldupr/aurora-starter-ecom.git
+   cd aurora-starter-ecom
+   pnpm install
+   ```
+
+2. **Configure environment:**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Edit `.env.local` with your Aurora API URL, API key, and tenant slug (from Aurora Studio → Settings).
+
+3. **Provision schema** (first time only, if not provisioned via Studio):
+   ```bash
+   AURORA_API_URL=https://api.yourapp.com AURORA_API_KEY=aur_xxx pnpm schema:provision
+   ```
+   By default uses `init/schema-v2.json` (enterprise schema with Offers) when present; otherwise `init/schema.json`. Or import in Aurora Studio: Data Builder → Import from JSON.
+
+4. **Enable Meilisearch** (for search): Aurora Studio → Settings → Search → configure Meilisearch, then run "Sync index" for your products table.
+
+5. **Run the app:**
+   ```bash
+   pnpm dev
+   ```
+   Open [http://localhost:3001](http://localhost:3001).
+
+---
 
 ## Features
 
@@ -70,4 +105,10 @@ The API redirects to `/checkout/acme` when the success path starts with `/checko
 
 ## Deploy to Vercel
 
-From Aurora Studio: Settings → Storefront → Deploy to Vercel. Env vars are injected automatically.
+From Aurora Studio: Settings → Storefront → Deploy to Vercel. Uses template `free-ecom` from the Template Registry. Environment variables are injected automatically.
+
+---
+
+## SDK Version
+
+This template uses `@aurora-studio/sdk@0.2.12`. Holmes features (offers, chat, home personalization, session attribution, time-to-completion metrics) are available in SDK 0.2.7+.

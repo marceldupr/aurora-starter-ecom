@@ -36,19 +36,25 @@ export function CheckoutButton() {
       },
     }));
 
+    const holmes_session_id =
+      typeof window !== "undefined" ? window.holmes?.getSessionId?.() : undefined;
+    const holmes_mission_start_timestamp =
+      typeof window !== "undefined" ? window.holmes?.getMissionStartTimestamp?.() : undefined;
+
     try {
-      const res = await fetch(
-        `${apiBase}/api/tenants/${tenantSlug}/store/checkout/sessions`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            successUrl,
-            cancelUrl,
-            lineItems,
+      const res = await fetch("/api/checkout/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          successUrl,
+          cancelUrl,
+          lineItems,
+          ...(holmes_session_id && { holmes_session_id }),
+          ...(holmes_mission_start_timestamp != null && {
+            holmes_mission_start_timestamp,
           }),
-        }
-      );
+        }),
+      });
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
