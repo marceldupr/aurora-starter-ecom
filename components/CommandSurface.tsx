@@ -84,10 +84,10 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
         </div>
       )}
       <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-aurora-text mb-3">
-        What are you shopping for today?
+        {isRecipeMission ? "Or something else?" : "What are you shopping for today?"}
       </h1>
       <p className="text-aurora-muted text-base sm:text-lg mb-6 font-medium">
-        {isRecipeMission ? "Or something else?" : "Let's get you there fast"}
+        {isRecipeMission ? "Let's get you there fast" : "Or something else?"}
       </p>
 
       {/* Command bar - search + intent */}

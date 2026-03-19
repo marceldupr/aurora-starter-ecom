@@ -350,7 +350,7 @@ export default function CheckoutPage() {
                     disabled={loading}
                     className="w-full py-3 sm:py-4 rounded-component bg-aurora-accent text-aurora-bg font-bold disabled:opacity-50 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-aurora-primary focus:ring-offset-2 focus:ring-offset-aurora-surface transition-opacity"
                   >
-                    {loading ? "Processing…" : "Place Order & Pay"}
+                    {loading ? "Processing…" : "Place order"}
                   </button>
                 </div>
               )}
