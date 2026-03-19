@@ -7,6 +7,7 @@ import { formatPrice, toCents } from "@/lib/format-price";
 import { search, type SearchHit } from "@/lib/aurora";
 import { holmesSearch } from "@/lib/holmes-events";
 import { useCart } from "./CartProvider";
+import { getRecipeSuggestion } from "@/lib/cart-intelligence";
 
 const RECENT_KEY = "aurora-search-recent";
 const RECENT_MAX = 5;
@@ -116,6 +117,8 @@ export function SearchDropdown({
   };
 
   const showRecent = open && query.trim() && !loading && hits.length === 0 && recentSearches.length > 0;
+  const recipeSuggestion = getRecipeSuggestion(query);
+  const showRecipeSuggestion = open && query.trim().length >= 2 && recipeSuggestion && !loading;
 
   return (
     <div ref={containerRef} className="relative w-full max-w-[280px]">
@@ -135,10 +138,23 @@ export function SearchDropdown({
         <div className="absolute top-full left-0 right-0 mt-1 rounded-component bg-aurora-surface border border-aurora-border shadow-xl z-[9999] max-h-96 overflow-y-auto">
           {loading ? (
             <div className="p-4 text-aurora-muted text-sm">Searching…</div>
-          ) : hits.length === 0 && !showRecent ? (
+          ) : hits.length === 0 && !showRecent && !showRecipeSuggestion ? (
             <div className="p-4 text-aurora-muted text-sm">No results</div>
           ) : (
             <div className="py-2">
+              {showRecipeSuggestion && (
+                <div className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-aurora-muted border-b border-aurora-border">Suggestions</div>
+              )}
+              {showRecipeSuggestion && (
+                <Link
+                  href={`/catalogue?q=${encodeURIComponent(recipeSuggestion!.replace("?", ""))}`}
+                  onClick={() => { addToRecent(recipeSuggestion!); setOpen(false); }}
+                  className="flex items-center gap-3 px-4 py-2 hover:bg-aurora-surface-hover transition-colors border-b border-aurora-border"
+                >
+                  <Search className="w-4 h-4 text-aurora-muted shrink-0" />
+                  <span className="font-medium truncate">{recipeSuggestion}</span>
+                </Link>
+              )}
               {hits.length > 0 && (
                 <>
                   <div className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-aurora-muted border-b border-aurora-border">Products</div>

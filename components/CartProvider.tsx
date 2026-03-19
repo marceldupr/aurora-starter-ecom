@@ -106,6 +106,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const addItem = useCallback((item: Omit<CartItem, "id" | "quantity"> & { quantity?: number }) => {
     const qty = item.quantity ?? 1;
     const cartId = `${item.tableSlug}:${item.recordId}`;
+    const isNew = !itemsRef.current.some((i) => i.id === cartId);
     setItems((prev) => {
       const existing = prev.find((i) => i.id === cartId);
       if (existing && existing.sellByWeight === item.sellByWeight) {
@@ -115,6 +116,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { ...item, id: cartId, recordId: item.recordId, quantity: qty }];
     });
+    if (isNew && typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("cart:itemAdded", { detail: { name: item.name } }));
+    }
   }, []);
 
   useEffect(() => {

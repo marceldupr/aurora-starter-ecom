@@ -138,6 +138,29 @@ export async function holmesInfer(sessionId: string): Promise<HolmesInferResult>
   return client.holmes.infer(sessionId);
 }
 
+/** Home personalization - sections for SSR fallback. sid optional (omit for default sections). */
+export async function getHomePersonalization(sid?: string): Promise<{
+  sections: Array<{
+    type: string;
+    title: string;
+    subtitle?: string;
+    products?: Array<{ id: string; name: string; price?: number; image_url?: string }>;
+    cards?: Array<{ title: string; imageUrl: string | null; linkUrl: string }>;
+  }>;
+} | null> {
+  try {
+    const base = getApiBase();
+    const tenant = getTenantSlug();
+    const key = process.env.AURORA_API_KEY ?? process.env.NEXT_PUBLIC_AURORA_API_KEY ?? "";
+    const url = `${base}/api/tenants/${encodeURIComponent(tenant)}/store/home-personalization${sid ? `?sid=${encodeURIComponent(sid)}` : ""}`;
+    const res = await fetch(url, { headers: key ? { "X-Api-Key": key } : {} });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
 // Holmes offers & chat: available in SDK 0.2.7+ via client.holmes.offers(), client.holmes.chat.send(), client.holmes.chat.list()
 
 /** Current user metadata and related data (e.g. addresses) when userId is provided. Uses GET /me from tenant spec. */

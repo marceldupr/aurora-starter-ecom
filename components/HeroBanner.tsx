@@ -1,14 +1,24 @@
 import Link from "next/link";
 import { createAuroraClient } from "@/lib/aurora";
 
+function getTimeOfDayOverrides(hour: number): { title?: string; cta?: string } | null {
+  if (hour >= 5 && hour < 11) return { title: "Start the day right", cta: "Shop breakfast" };
+  if (hour >= 11 && hour < 14) return { title: "Lunch sorted", cta: "Grab lunch" };
+  if (hour >= 17 && hour < 21) return { title: "Dinner in 20", cta: "Shop dinner" };
+  return null;
+}
+
 /**
  * Fetches hero banners from CMS (hero_banners table) when available.
  * Falls back to default hero content when table is empty or missing.
+ * Varies title/CTA by time of day when no CMS override.
  */
 export async function HeroBanner() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "Store";
   const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL ?? "";
   const defaultImage = "/Hippo-Hero.jpg";
+  const hour = new Date().getHours();
+  const timeOverrides = getTimeOfDayOverrides(hour);
 
   let banners: Array<{ title?: string; subtitle?: string; image_url?: string; link_url?: string }> = [];
 
@@ -26,7 +36,8 @@ export async function HeroBanner() {
 
   const banner = banners[0];
   const bgImage = banner?.image_url || defaultImage;
-  const title = banner?.title ?? "Your weekly shop in 20 minutes";
+  const baseTitle = banner?.title ?? "Your weekly shop in 20 minutes";
+  const title = banner?.title ? baseTitle : (timeOverrides?.title ?? baseTitle);
   const subtitle = banner?.subtitle ?? "Fresh groceries from local stores delivered today.";
 
   return (
@@ -69,7 +80,7 @@ export async function HeroBanner() {
             href={banner?.link_url ?? "/catalogue"}
             className="inline-flex items-center justify-center h-12 px-8 rounded-xl bg-aurora-primary text-white font-semibold text-base hover:bg-aurora-primary-dark transition-colors duration-200 shadow-sm"
           >
-            Start Shopping
+            {timeOverrides?.cta ?? "Start Shopping"}
           </Link>
           <Link
             href="/catalogue"

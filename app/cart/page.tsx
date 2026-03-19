@@ -4,6 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
+import { BasketBundlePlaceholder } from "@/components/BasketBundlePlaceholder";
+import { CompleteYourMeal } from "@/components/CompleteYourMeal";
+import { ForgotSuggestions } from "@/components/ForgotSuggestions";
+import { BasketCompositionSummary } from "@/components/BasketCompositionSummary";
+import { ReorderLastShop } from "@/components/ReorderLastShop";
 
 function formatPrice(cents: number): string {
   return new Intl.NumberFormat("en-GB", {
@@ -44,7 +49,8 @@ export default function CartPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6">
-      <h1 className="text-2xl font-bold mb-6">Your Basket</h1>
+      <h1 className="text-2xl font-bold mb-2">Your Basket</h1>
+      <BasketCompositionSummary items={items} />
 
       {store && (
         <div className="flex items-center justify-between p-4 rounded-component bg-aurora-surface/80 border border-aurora-border mb-6">
@@ -76,18 +82,14 @@ export default function CartPage() {
               Clear Basket
             </button>
           </div>
-          {/* Holmes injects "In a rush? We picked this for you" bundle here when mission confidence >= 0.5 and cart has items */}
-          <div data-holmes="basket-bundle" className="mb-6 min-h-[1px]">
-            <div className="animate-pulse rounded-component bg-aurora-surface border border-aurora-border p-4" aria-hidden="true">
-              <div className="h-5 w-56 bg-aurora-surface-hover rounded mb-4" />
-              <div className="flex gap-4 overflow-hidden">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-20 h-20 rounded-lg bg-aurora-surface-hover shrink-0" />
-                ))}
-              </div>
-              <div className="h-10 w-64 bg-aurora-surface-hover rounded-lg mt-4" />
-            </div>
+          <ReorderLastShop />
+          <CompleteYourMeal />
+          {/* Holmes injects bundle here when mission confidence >= 0.5; skeleton hides when inject happens or after ~3s */}
+          <div className="mb-6">
+            <div data-holmes="basket-bundle" className="min-h-[1px]" />
+            <BasketBundlePlaceholder />
           </div>
+          <ForgotSuggestions />
           <div className="space-y-4">
             {items.map((item) => (
               <div

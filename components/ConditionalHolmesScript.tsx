@@ -6,7 +6,7 @@ import { getHolmesScriptUrl } from "@aurora-studio/sdk";
 
 /**
  * Loads Holmes script only when holmes_disabled is not in the URL.
- * Used for /simulate page's "Holmes OFF" iframe.
+ * Add ?holmes_disabled=1 to any URL to disable Holmes for testing.
  */
 export function ConditionalHolmesScript() {
   const searchParams = useSearchParams();

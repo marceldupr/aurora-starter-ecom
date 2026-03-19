@@ -20,6 +20,7 @@ function formatPrice(cents: number): string {
 
 const SHIPPING_CENTS = 250;
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const PREFER_ORGANIC_KEY = "aurora-prefer-organic";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function CheckoutPage() {
   const [mobile, setMobile] = useState("");
   const [instructions, setInstructions] = useState("");
   const [allowSubstitutions, setAllowSubstitutions] = useState(true);
+  const [preferOrganic, setPreferOrganic] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +49,23 @@ export default function CheckoutPage() {
       setSlots([]);
     }
   }, [location]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(PREFER_ORGANIC_KEY);
+      if (stored === "true") setPreferOrganic(true);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PREFER_ORGANIC_KEY, String(preferOrganic));
+    } catch {
+      /* ignore */
+    }
+  }, [preferOrganic]);
 
   const handlePayment = async () => {
     if (!termsAccepted) {
@@ -242,6 +261,15 @@ export default function CheckoutPage() {
                   className="rounded"
                 />
                 <span>Allow product substitutions if items are unavailable</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer" data-holmes="checkout-extras">
+                <input
+                  type="checkbox"
+                  checked={preferOrganic}
+                  onChange={(e) => setPreferOrganic(e.target.checked)}
+                  className="rounded"
+                />
+                <span>Prefer organic when available</span>
               </label>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input

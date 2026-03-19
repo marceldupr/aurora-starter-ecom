@@ -6,11 +6,6 @@ import { Footer } from "./Footer";
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isSimulate = pathname === "/simulate";
-
-  if (isSimulate) {
-    return <>{children}</>;
-  }
 
   return (
     <>

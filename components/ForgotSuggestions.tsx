@@ -1,0 +1,114 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useCart } from "@/components/CartProvider";
+import { useStore } from "@/components/StoreContext";
+import { search, type SearchHit } from "@/lib/aurora";
+import { formatPrice, toCents } from "@/lib/format-price";
+import { getForgottenSuggestions } from "@/lib/cart-intelligence";
+import { AddToCartButton } from "@/components/AddToCartButton";
+import { getStoreConfig } from "@/lib/aurora";
+
+/** "You might have forgotten" - when cart has bread, suggest butter; cereal → milk, etc. */
+export function ForgotSuggestions() {
+  const { items } = useCart();
+  const { store } = useStore();
+  const [products, setProducts] = useState<SearchHit[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [catalogSlug, setCatalogSlug] = useState<string | null>(null);
+
+  const suggestions = getForgottenSuggestions(items.map((i) => i.name));
+  const inCartIds = new Set(items.map((i) => i.recordId));
+
+  useEffect(() => {
+    if (!suggestions.length || !store?.id) return;
+    setLoading(true);
+    Promise.all(
+      suggestions.slice(0, 3).map((term) =>
+        search({ q: term, limit: 2, vendorId: store.id })
+      )
+    )
+      .then((results) => {
+        const seen = new Set<string>();
+        const merged: SearchHit[] = [];
+        for (const res of results) {
+          for (const h of res.hits ?? []) {
+            const id = (h.recordId ?? h.id) as string;
+            if (!seen.has(id) && !inCartIds.has(id)) {
+              seen.add(id);
+              merged.push(h);
+            }
+          }
+        }
+        setProducts(merged.slice(0, 4));
+      })
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
+  }, [suggestions.join(","), store?.id, items.length]);
+
+  useEffect(() => {
+    getStoreConfig().then((c) => {
+      const slug = (c as { catalogTableSlug?: string })?.catalogTableSlug;
+      if (slug) setCatalogSlug(slug);
+    });
+  }, []);
+
+  if (!suggestions.length || products.length === 0) return null;
+
+  return (
+    <div className="mb-6 p-4 rounded-xl bg-aurora-surface border border-aurora-border">
+      <h3 className="font-semibold mb-2">Often added with your items</h3>
+      {loading ? (
+        <div className="flex gap-3">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="w-14 h-14 rounded-lg bg-aurora-surface-hover animate-pulse shrink-0"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-3">
+          {products.map((p) => {
+            const id = (p.recordId ?? p.id) as string;
+            const name = p.name ?? p.title ?? String(p.recordId ?? p.id);
+            const priceCents = toCents(p.price);
+            return (
+              <div
+                key={id}
+                className="flex items-center gap-3 p-2 rounded-lg bg-aurora-surface-hover border border-aurora-border"
+              >
+                <Link href={`/catalogue/${id}`} className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-12 h-12 rounded-lg bg-aurora-surface overflow-hidden shrink-0">
+                    {p.image_url ? (
+                      <img src={p.image_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="w-full h-full flex items-center justify-center text-aurora-muted">-</span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate">{name}</p>
+                    {priceCents != null && (
+                      <p className="text-xs text-aurora-primary font-semibold">{formatPrice(priceCents)}</p>
+                    )}
+                  </div>
+                </Link>
+                {priceCents != null && catalogSlug && (
+                  <AddToCartButton
+                    recordId={id}
+                    tableSlug={catalogSlug}
+                    name={name}
+                    unitAmount={priceCents}
+                    imageUrl={p.image_url}
+                    className="text-xs px-2 py-1 shrink-0"
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

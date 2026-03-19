@@ -377,6 +377,74 @@ body {
   color: var(--aurora-primary);
 }
 
+/* Holmes catalogue-list (Recommended for you on catalogue page) */
+[data-holmes="catalogue-list"] [data-holmes-catalogue-list-title] {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+[data-holmes="catalogue-list"] [data-holmes-catalogue-list-grid] {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  [data-holmes="catalogue-list"] [data-holmes-catalogue-list-grid] {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+[data-holmes="catalogue-list"] [data-holmes-catalogue-card] {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--aurora-border);
+  background: var(--aurora-surface);
+  text-decoration: none;
+  color: inherit;
+  min-height: 260px;
+}
+[data-holmes="catalogue-list"] [data-holmes-catalogue-card]:hover {
+  border-color: var(--aurora-primary);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  color: inherit;
+}
+[data-holmes="catalogue-list"] [data-holmes-catalogue-card-image] {
+  aspect-ratio: 1;
+  min-height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--aurora-surface-hover);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-holmes="catalogue-list"] [data-holmes-catalogue-card-image] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+[data-holmes="catalogue-list"] [data-holmes-catalogue-card-fallback] {
+  font-size: 1rem;
+  color: var(--aurora-muted);
+}
+[data-holmes="catalogue-list"] [data-holmes-catalogue-card-name] {
+  font-weight: 600;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-holmes="catalogue-list"] [data-holmes-catalogue-card-price] {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--aurora-primary);
+  margin-top: auto;
+}
+
 /* Holmes floating banner (Discover more pop-up) - vanilla HTML from script */
 #holmes-root[data-holmes-banner-backdrop] {
   position: fixed;

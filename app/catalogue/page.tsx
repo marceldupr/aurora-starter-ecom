@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { useStore } from "@/components/StoreContext";
+import { useCart } from "@/components/CartProvider";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { search, getStoreConfig } from "@/lib/aurora";
+import { getRecipeTitle, expandRecipeSearchQuery } from "@/lib/cart-intelligence";
 import type { SearchHit } from "@/lib/aurora";
 import {
   CatalogueFilters,
@@ -59,6 +61,7 @@ function CatalogueContent() {
   const category = searchParams.get("category") ?? "";
   const q = searchParams.get("q") ?? "";
   const { store } = useStore();
+  const { addItem } = useCart();
   const [hits, setHits] = useState<SearchHit[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -104,8 +107,9 @@ function CatalogueContent() {
     try {
       const sort = tab === "new" ? "created_at" : tab === "sale" ? "price" : "name";
       const order = tab === "new" ? "desc" : "asc";
+      const searchQ = q.trim() ? expandRecipeSearchQuery(q.trim()) : undefined;
       const res = await search({
-        q: q.trim() || undefined,
+        q: searchQ || undefined,
         limit,
         offset: page * limit,
         vendorId: store?.id,
@@ -234,6 +238,26 @@ function CatalogueContent() {
     setPage(0);
   }, []);
 
+  const recipeTitle = getRecipeTitle(q);
+  const addAllToCart = useCallback(() => {
+    if (!catalogSlug) return;
+    for (const hit of hits) {
+      const id = (hit.recordId ?? hit.id) as string;
+      const name = getDisplayName(hit);
+      const rawPrice = getPrice(hit);
+      const priceCents = rawPrice != null ? Math.round(rawPrice * 100) : 0;
+      if (priceCents > 0) {
+        addItem({
+          recordId: id,
+          tableSlug: catalogSlug,
+          name,
+          unitAmount: priceCents,
+          imageUrl: getImageUrl(hit),
+        });
+      }
+    }
+  }, [hits, catalogSlug, addItem]);
+
   return (
     <div className="max-w-7xl mx-auto py-6 sm:py-10 px-4 sm:px-6">
       <div className="flex flex-col lg:flex-row gap-6">
@@ -268,7 +292,20 @@ function CatalogueContent() {
         {/* Main content - min-w-0 lets it shrink; flex-1 lets it grow to fill space */}
         <main className="flex-1 min-w-0 w-full sm:min-w-[280px] flex flex-col">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-            <h1 className="font-display text-xl sm:text-2xl font-bold">Products</h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="font-display text-xl sm:text-2xl font-bold">
+                {recipeTitle ? `Make tonight: ${recipeTitle}` : "Products"}
+              </h1>
+              {recipeTitle && hits.length > 0 && catalogSlug && (
+                <button
+                  type="button"
+                  onClick={addAllToCart}
+                  className="px-4 py-2 rounded-lg bg-aurora-primary text-white text-sm font-semibold hover:bg-aurora-primary-dark transition-colors"
+                >
+                  Add all to cart
+                </button>
+              )}
+            </div>
             <SortDropdown value={tab} onChange={handleSortChange} />
           </div>
 
