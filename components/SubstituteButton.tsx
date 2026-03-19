@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Replace } from "lucide-react";
 import { useCart } from "./CartProvider";
-import { holmesGoesWith, type SearchHit } from "@/lib/aurora";
+import { holmesSimilarProducts, type SearchHit } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { ProductImage } from "./ProductImage";
 
@@ -47,7 +47,7 @@ export function SubstituteButton({ item, className }: SubstituteButtonProps) {
   useEffect(() => {
     if (!open || alternatives.length > 0) return;
     setLoading(true);
-    holmesGoesWith(item.recordId, 6)
+    holmesSimilarProducts(item.recordId, 6, item.name)
       .then((res) => {
         const hits = (res.products ?? []) as SearchHit[];
         const filtered = hits.filter(

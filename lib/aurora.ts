@@ -233,6 +233,26 @@ export async function holmesGoesWith(
   return client.store.holmesGoesWith(productId, limit);
 }
 
+/** Holmes insights: similar products by type (what_it_is). For substitutions - same product type, not complementary. */
+export async function holmesSimilarProducts(
+  productId: string,
+  limit = 8,
+  productName?: string
+): Promise<{ products: SearchHit[]; total: number }> {
+  if (typeof window !== "undefined") {
+    const qs = new URLSearchParams({ product_id: productId, limit: String(limit) });
+    if (productName?.trim()) qs.set("product_name", productName.trim());
+    const res = await fetch(`/api/holmes/similar?${qs.toString()}`);
+    if (!res.ok) {
+      const err = (await res.json().catch(() => ({}))) as { error?: string };
+      throw new Error(err.error ?? "Similar products failed");
+    }
+    return res.json();
+  }
+  const client = createAuroraClient();
+  return client.store.holmesSimilar(productId, limit, productName);
+}
+
 /** Home personalization - sections for SSR fallback. sid optional (omit for default sections). */
 export async function getHomePersonalization(sid?: string): Promise<HomePersonalizationResult | null> {
   try {
