@@ -6,7 +6,7 @@ import { AddToCartButton } from "./AddToCartButton";
 import { useCart } from "./CartProvider";
 import { useStore } from "./StoreContext";
 import { formatPrice } from "@/lib/format-price";
-import { search, type SearchHit } from "@/lib/aurora";
+import { holmesGoesWith, search, type SearchHit } from "@/lib/aurora";
 import { toCents } from "@/lib/format-price";
 
 function getImageUrl(hit: SearchHit): string | null {
@@ -33,17 +33,22 @@ export function SmartBasketSuggest() {
       return;
     }
     const inCartIds = new Set(items.map((i) => i.recordId));
-    const q = firstItemName || "";
-    search({
-      q: q || undefined,
-      limit: 6,
-      vendorId: store?.id,
-    })
+    const firstRecordId = items[0]?.recordId;
+    holmesGoesWith(firstRecordId!, 6)
       .then((res) => {
-        const hits = (res.hits ?? []).filter((h) => !inCartIds.has(h.recordId));
+        const hits = (res.products ?? []).filter(
+          (h) => !inCartIds.has((h.recordId ?? h.id) as string)
+        ) as SearchHit[];
         setSuggestions(hits.slice(0, 4));
       })
-      .catch(() => setSuggestions([]));
+      .catch(() =>
+        search({ q: firstItemName || undefined, limit: 6, vendorId: store?.id })
+          .then((res) => {
+            const hits = (res.hits ?? []).filter((h) => !inCartIds.has(h.recordId));
+            setSuggestions(hits.slice(0, 4));
+          })
+          .catch(() => setSuggestions([]))
+      );
   }, [items, firstItemName, store?.id]);
 
   if (suggestions.length === 0) return null;

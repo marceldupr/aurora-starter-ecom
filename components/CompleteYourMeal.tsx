@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
-import { search, type SearchHit } from "@/lib/aurora";
+import { holmesRecipeProducts, search, type SearchHit } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { getMealToComplete } from "@/lib/cart-intelligence";
 import { AddToCartButton } from "@/components/AddToCartButton";
@@ -24,25 +24,32 @@ export function CompleteYourMeal() {
   useEffect(() => {
     if (!mealData || !store?.id) return;
     setLoading(true);
-    const searchTerms = mealData.searchTerms.slice(0, 3);
-    Promise.all(
-      searchTerms.map((term) =>
-        search({ q: term, limit: 3, vendorId: store.id })
-      )
-    )
-      .then((results) => {
-        const seen = new Set<string>();
-        const merged: SearchHit[] = [];
-        for (const res of results) {
-          for (const h of res.hits ?? []) {
-            const id = (h.recordId ?? h.id) as string;
-            if (!seen.has(id) && !inCartIds.has(id)) {
-              seen.add(id);
-              merged.push(h);
+    holmesRecipeProducts(mealData.meal, 6)
+      .then((res) => {
+        const hits = (res.products ?? []) as SearchHit[];
+        const merged = hits
+          .filter((h) => !inCartIds.has((h.recordId ?? h.id) as string))
+          .slice(0, 6);
+        setProducts(merged);
+      })
+      .catch(() => {
+        const searchTerms = mealData!.searchTerms.slice(0, 3);
+        return Promise.all(
+          searchTerms.map((term) => search({ q: term, limit: 3, vendorId: store!.id }))
+        ).then((results) => {
+          const seen = new Set<string>();
+          const merged: SearchHit[] = [];
+          for (const res of results) {
+            for (const h of res.hits ?? []) {
+              const id = (h.recordId ?? h.id) as string;
+              if (!seen.has(id) && !inCartIds.has(id)) {
+                seen.add(id);
+                merged.push(h);
+              }
             }
           }
-        }
-        setProducts(merged.slice(0, 6));
+          setProducts(merged.slice(0, 6));
+        });
       })
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));

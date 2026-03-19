@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createAuroraClient } from "@/lib/aurora";
+import { createAuroraClient, holmesGoesWith } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { AddToCartButton } from "./AddToCartButton";
 
@@ -35,23 +35,49 @@ export async function YouMayAlsoLike({
     const aurora = createAuroraClient();
     const config = await aurora.store.config();
     currency = (config as { currency?: string }).currency ?? "GBP";
-    const query: { limit: number; sort: string; order: "desc"; category_id?: string } = {
-      limit: 8,
-      sort: "created_at",
-      order: "desc",
-    };
-    if (categoryId) query.category_id = categoryId;
-    const result = await aurora.tables(catalogTableSlug).records.list(query);
-    records = (result.data ?? []).filter((r) => String(r.id) !== productId).slice(0, 4);
+
+    const goesWithRes = await holmesGoesWith(productId, 6).catch(() => null);
+    if (goesWithRes && goesWithRes.products?.length > 0) {
+      records = (goesWithRes.products as Record<string, unknown>[])
+        .filter((r) => String(r.recordId ?? r.id) !== productId)
+        .slice(0, 4)
+        .map((h) => ({
+          id: h.recordId ?? h.id,
+          name: h.name ?? h.title ?? h.recordId ?? h.id,
+          price: h.price,
+          image_url: h.image_url,
+          fromHolmes: true,
+        }));
+    }
+    if (records.length === 0 && categoryId) {
+      const result = await aurora.tables(catalogTableSlug).records.list({
+        limit: 8,
+        sort: "created_at",
+        order: "desc",
+        category_id: categoryId,
+      } as Record<string, unknown>);
+      records = (result.data ?? []).filter((r) => String(r.id) !== productId).slice(0, 4);
+    }
+    if (records.length === 0) {
+      const result = await aurora.tables(catalogTableSlug).records.list({
+        limit: 8,
+        sort: "created_at",
+        order: "desc",
+      });
+      records = (result.data ?? []).filter((r) => String(r.id) !== productId).slice(0, 4);
+    }
   } catch {
     return null;
   }
 
   if (records.length === 0) return null;
 
+  const fromHolmes = records.some((r) => (r as { fromHolmes?: boolean }).fromHolmes);
   return (
     <div data-holmes="recommendations" data-current-product={productId}>
-      <h2 className="font-display text-xl font-bold mb-4">You may also like</h2>
+      <h2 className="font-display text-xl font-bold mb-4">
+        {fromHolmes ? "Pairs well with" : "You may also like"}
+      </h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {records.map((record) => {
           const id = String(record.id ?? "");

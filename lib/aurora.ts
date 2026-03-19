@@ -138,6 +138,58 @@ export async function holmesInfer(sessionId: string): Promise<HolmesInferResult>
   return client.holmes.infer(sessionId);
 }
 
+/** Holmes insights: products for a recipe (paella, curry, pasta). Uses holmes_insights.recipe_ideas. */
+export async function holmesRecipeProducts(
+  recipe: string,
+  limit = 12
+): Promise<{ products: SearchHit[]; total: number; recipe: string }> {
+  if (typeof window !== "undefined") {
+    const qs = new URLSearchParams({ recipe, limit: String(limit) });
+    const res = await fetch(`/api/holmes/recipe-products?${qs.toString()}`);
+    if (!res.ok) {
+      const err = (await res.json().catch(() => ({}))) as { error?: string };
+      throw new Error(err.error ?? "Recipe products failed");
+    }
+    return res.json();
+  }
+  const base = getApiBase();
+  const tenant = getTenantSlug();
+  const key = process.env.AURORA_API_KEY ?? process.env.NEXT_PUBLIC_AURORA_API_KEY ?? "";
+  const url = `${base.replace(/\/$/, "")}/api/tenants/${encodeURIComponent(tenant)}/store/holmes/recipe-products?recipe=${encodeURIComponent(recipe)}&limit=${limit}`;
+  const res = await fetch(url, { headers: key ? { "X-Api-Key": key } : {} });
+  if (!res.ok) {
+    const err = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(err.error ?? "Recipe products failed");
+  }
+  return res.json();
+}
+
+/** Holmes insights: products that go well with a given product. Uses holmes_insights.goes_well_with. */
+export async function holmesGoesWith(
+  productId: string,
+  limit = 8
+): Promise<{ products: SearchHit[]; total: number }> {
+  if (typeof window !== "undefined") {
+    const qs = new URLSearchParams({ product_id: productId, limit: String(limit) });
+    const res = await fetch(`/api/holmes/goes-with?${qs.toString()}`);
+    if (!res.ok) {
+      const err = (await res.json().catch(() => ({}))) as { error?: string };
+      throw new Error(err.error ?? "Goes-with failed");
+    }
+    return res.json();
+  }
+  const base = getApiBase();
+  const tenant = getTenantSlug();
+  const key = process.env.AURORA_API_KEY ?? process.env.NEXT_PUBLIC_AURORA_API_KEY ?? "";
+  const url = `${base.replace(/\/$/, "")}/api/tenants/${encodeURIComponent(tenant)}/store/holmes/goes-with?product_id=${encodeURIComponent(productId)}&limit=${limit}`;
+  const res = await fetch(url, { headers: key ? { "X-Api-Key": key } : {} });
+  if (!res.ok) {
+    const err = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(err.error ?? "Goes-with failed");
+  }
+  return res.json();
+}
+
 /** Home personalization - sections for SSR fallback. sid optional (omit for default sections). */
 export async function getHomePersonalization(sid?: string): Promise<{
   sections: Array<{
