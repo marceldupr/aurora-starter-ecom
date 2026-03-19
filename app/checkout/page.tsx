@@ -299,11 +299,14 @@ export default function CheckoutPage() {
             <h2 className="font-semibold mb-4">Order Summary</h2>
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {items.map((i) => (
-                <div key={i.id} className="flex justify-between text-sm">
-                  <span className="truncate max-w-[180px]">
+                <div key={i.id} className="flex justify-between text-sm gap-2">
+                  <Link
+                    href={`/catalogue/${i.recordId}`}
+                    className="truncate max-w-[180px] hover:text-aurora-primary transition-colors"
+                  >
                     {i.name} {i.sellByWeight ? `× ${i.quantity} ${i.unit || "kg"}` : `x${i.quantity}`}
-                  </span>
-                  <span>{formatPrice(i.unitAmount * i.quantity)}</span>
+                  </Link>
+                  <span className="shrink-0">{formatPrice(i.unitAmount * i.quantity)}</span>
                 </div>
               ))}
             </div>
@@ -321,12 +324,12 @@ export default function CheckoutPage() {
                 <span>{formatPrice(grandTotal)}</span>
               </div>
             </div>
-            <div className="flex gap-2 mt-4">
+            <div className="flex flex-col sm:flex-row gap-2 mt-4">
               {step > 1 && (
                 <button
                   type="button"
                   onClick={() => setStep(step - 1)}
-                  className="flex-1 py-3 rounded-component border border-aurora-border"
+                  className="flex-1 py-3 rounded-component border border-aurora-border hover:bg-aurora-surface-hover focus:outline-none focus:ring-2 focus:ring-aurora-primary/50"
                 >
                   Back
                 </button>
@@ -335,17 +338,17 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setStep(step + 1)}
-                  className="flex-1 py-3 rounded-component bg-aurora-accent text-aurora-bg font-bold"
+                  className="flex-1 py-3 rounded-component bg-aurora-accent text-aurora-bg font-bold hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-aurora-primary focus:ring-offset-2 focus:ring-offset-aurora-surface"
                 >
                   {step === 2 ? "Proceed to Payment" : "Continue"}
                 </button>
               ) : (
-                <div data-holmes="payment">
+                <div data-holmes="payment" className="flex-1 min-w-0 [&_button]:outline-none [&_button]:ring-0 [&_button]:border-0">
                   <button
                     type="button"
                     onClick={handlePayment}
                     disabled={loading}
-                    className="flex-1 w-full py-3 rounded-component bg-aurora-accent text-aurora-bg font-bold disabled:opacity-50"
+                    className="w-full py-3 sm:py-4 rounded-component bg-aurora-accent text-aurora-bg font-bold disabled:opacity-50 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-aurora-primary focus:ring-offset-2 focus:ring-offset-aurora-surface transition-opacity"
                   >
                     {loading ? "Processing…" : "Place Order & Pay"}
                   </button>

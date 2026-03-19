@@ -109,7 +109,10 @@ export default function CartPage() {
                 key={item.id}
                 className="flex gap-4 p-4 rounded-component bg-aurora-surface border border-aurora-border"
               >
-                <div className="w-16 h-16 rounded-component bg-aurora-surface-hover shrink-0 overflow-hidden">
+                <Link
+                  href={`/catalogue/${item.recordId}`}
+                  className="w-16 h-16 rounded-component bg-aurora-surface-hover shrink-0 overflow-hidden block hover:opacity-90 transition-opacity"
+                >
                   <ProductImage
                     src={item.imageUrl}
                     className="w-full h-full"
@@ -117,9 +120,14 @@ export default function CartPage() {
                     thumbnail
                     fallback={<span className="w-full h-full flex items-center justify-center text-aurora-muted text-xs">-</span>}
                   />
-                </div>
+                </Link>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium">{item.name}</p>
+                  <Link
+                    href={`/catalogue/${item.recordId}`}
+                    className="font-medium hover:text-aurora-primary transition-colors block"
+                  >
+                    {item.name}
+                  </Link>
                   <p className="text-sm text-aurora-muted">
                     {formatPrice(item.unitAmount)}
                     {item.sellByWeight ? `/${item.unit || "kg"}` : ""} × {item.quantity}
@@ -189,11 +197,11 @@ export default function CartPage() {
                 Apply
               </button>
             </div>
-            <div data-holmes="payment">
+            <div data-holmes="payment" className="[&_button]:outline-none [&_button]:ring-0 [&_button]:border-0">
               <button
                 type="button"
                 onClick={handleCheckout}
-                className="w-full mt-4 py-4 rounded-component bg-aurora-accent text-aurora-bg font-bold hover:opacity-90"
+                className="w-full mt-4 py-3 sm:py-4 rounded-component bg-aurora-accent text-aurora-bg font-bold hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-aurora-primary focus:ring-offset-2 focus:ring-offset-aurora-surface transition-opacity"
               >
                 Proceed to Checkout
               </button>

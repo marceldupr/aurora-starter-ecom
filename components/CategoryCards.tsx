@@ -120,15 +120,15 @@ export function CategoryCards() {
   if (ordered.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-      {ordered.map((cat, i) => (
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2 sm:gap-3">
+      {ordered.map((cat) => (
         <Link
           key={cat.slug}
           href={`/catalogue?category=${encodeURIComponent(cat.slug)}`}
-          className="group block rounded-2xl overflow-hidden bg-aurora-surface border-2 border-aurora-border hover:border-aurora-primary/60 hover:shadow-xl hover:shadow-aurora-primary/15 hover:scale-[1.02] active:scale-[0.99] transition-all duration-200"
+          className="group block rounded-xl overflow-hidden bg-aurora-surface border border-aurora-border hover:border-aurora-primary/60 hover:shadow-lg hover:shadow-aurora-primary/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
         >
           <div
-            className={`aspect-[4/3] relative bg-gradient-to-br ${gradientForSlug(cat.slug)}`}
+            className={`aspect-square relative bg-gradient-to-br ${gradientForSlug(cat.slug)}`}
           >
             {cat.image_url ? (
               <div className="absolute inset-0">
@@ -143,13 +143,13 @@ export function CategoryCards() {
                 <span className="opacity-40 group-hover:opacity-60 transition-opacity">
                   {(() => {
                     const Icon = getCategoryIcon(cat.slug);
-                    return <Icon className="w-12 h-12 sm:w-16 sm:h-16 text-white" strokeWidth={1.5} aria-hidden />;
+                    return <Icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" strokeWidth={1.5} aria-hidden />;
                   })()}
                 </span>
               </div>
             )}
-            <div className="absolute inset-0 flex items-end p-4 bg-gradient-to-t from-black/40 via-transparent to-transparent">
-              <span className="font-bold text-sm sm:text-base text-white drop-shadow-md">
+            <div className="absolute inset-0 flex items-end p-2 sm:p-3 bg-gradient-to-t from-black/50 via-transparent to-transparent">
+              <span className="font-semibold text-xs sm:text-sm text-white drop-shadow-md line-clamp-2">
                 {cat.name}
               </span>
             </div>

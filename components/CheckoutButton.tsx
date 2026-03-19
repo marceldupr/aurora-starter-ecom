@@ -80,7 +80,7 @@ export function CheckoutButton() {
       type="button"
       onClick={handleCheckout}
       disabled={loading || items.length === 0}
-      className="px-6 py-3 rounded-component bg-aurora-accent text-aurora-bg font-semibold hover:opacity-90 disabled:opacity-50"
+      className="w-full sm:w-auto px-6 py-3 rounded-component bg-aurora-accent text-aurora-bg font-semibold hover:opacity-90 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-aurora-primary focus:ring-offset-2 focus:ring-offset-aurora-surface transition-opacity"
     >
       {loading ? "Processing…" : "Proceed to checkout"}
     </button>
