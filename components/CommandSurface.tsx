@@ -77,8 +77,8 @@ export function CommandSurface({ heroImageUrl }: { heroImageUrl?: string | null 
         Search or type an intent — we&apos;ll help you get there fast
       </p>
 
-      {/* Command bar - search + intent */}
-      <div className="relative mb-8">
+      {/* Command bar - search + intent (z-20 so dropdown appears above Quick starts) */}
+      <div className="relative z-20 mb-8">
         {store ? (
           <div
             className="rounded-2xl border border-white/60 bg-white/95 backdrop-blur-sm shadow-xl shadow-black/5 focus-within:border-aurora-primary/60 focus-within:ring-2 focus-within:ring-aurora-primary/20 transition-all"
@@ -102,7 +102,7 @@ export function CommandSurface({ heroImageUrl }: { heroImageUrl?: string | null 
       </div>
 
       {/* Quick starts - Holmes-influenced when inference exists, else time-of-day defaults */}
-      <div>
+      <div className="relative z-0">
         <p className="text-xs font-semibold text-aurora-muted/90 uppercase tracking-widest mb-4">
           Quick starts
         </p>

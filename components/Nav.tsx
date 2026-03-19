@@ -4,7 +4,6 @@ import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { CartLink } from "./CartLink";
 import { SearchDropdown } from "./SearchDropdown";
-import { CategoriesMegaMenu } from "./CategoriesMegaMenu";
 import { useStore } from "./StoreContext";
 import { useAuth } from "./AuthProvider";
 
@@ -37,7 +36,12 @@ export function Nav() {
               )}
             </Link>
             <div className="hidden sm:flex items-center gap-4">
-              <CategoriesMegaMenu />
+              <Link
+                href="/catalogue"
+                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
+              >
+                All Categories
+              </Link>
               <Link
                 href="/"
                 className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
