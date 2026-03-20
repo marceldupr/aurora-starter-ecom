@@ -26,6 +26,7 @@ type Section = {
 type HomeData = {
   sections: Section[];
   hero?: unknown;
+  timeOfDay?: "morning" | "afternoon" | "evening";
 };
 
 /** Trust signal for section - builds user confidence */
@@ -65,7 +66,8 @@ export function AdaptiveFeed({
   const ref = useRef<HTMLDivElement>(null);
   const [holmesData, setHolmesData] = useState<HomeData | null>(null);
   const { store } = useStore();
-  const timeOfDay = getTimeOfDay();
+  const clientTimeOfDay = getTimeOfDay();
+  const timeOfDay = holmesData?.timeOfDay ?? clientTimeOfDay;
   const symbol = CURRENCY_SYMBOLS[currency] ?? "£";
 
   useEffect(() => {
