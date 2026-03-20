@@ -79,16 +79,6 @@ export default function CartPage() {
         </div>
       )}
 
-      <HolmesContextualWell variant="cart" />
-      {items[0] && (
-        <div className="mb-6">
-          <HolmesTidbits
-            entity={items[0].recordId}
-            entityType="product"
-          />
-        </div>
-      )}
-
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
@@ -101,17 +91,7 @@ export default function CartPage() {
               Clear Basket
             </button>
           </div>
-          <ReorderLastShop />
-          <BasketSaverTips />
-          <RecipePicker />
-          <CompleteYourMeal />
-          {/* Holmes injects bundle here when mission confidence >= 0.5; skeleton hides when inject happens or after ~3s */}
-          <div id="basket-bundle" className="mb-6">
-            <div data-holmes="basket-bundle" className="min-h-[1px]" />
-            <BasketBundlePlaceholder />
-          </div>
-          <ForgotSuggestions />
-          <div className="space-y-4">
+          <div className="space-y-4 mb-8">
             {items.map((item) => (
               <div
                 key={item.id}
@@ -172,6 +152,26 @@ export default function CartPage() {
               </div>
             ))}
           </div>
+
+          <HolmesContextualWell variant="cart" />
+          {items[0] && (
+            <div className="mb-6">
+              <HolmesTidbits
+                entity={items[0].recordId}
+                entityType="product"
+              />
+            </div>
+          )}
+          <ReorderLastShop />
+          <BasketSaverTips />
+          <RecipePicker />
+          <CompleteYourMeal />
+          {/* Holmes injects bundle here when mission confidence >= 0.5; skeleton hides when inject happens or after ~3s */}
+          <div id="basket-bundle" className="mb-6">
+            <div data-holmes="basket-bundle" className="min-h-[1px]" />
+            <BasketBundlePlaceholder />
+          </div>
+          <ForgotSuggestions />
         </div>
 
         <div>
