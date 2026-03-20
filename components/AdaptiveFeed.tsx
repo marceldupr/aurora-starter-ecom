@@ -104,7 +104,7 @@ export function AdaptiveFeed({
                 <div className="flex items-baseline justify-between gap-2">
                   <h2 className="text-lg font-bold text-aurora-text flex items-center gap-2">
                     <ChefHat className="w-5 h-5 text-aurora-primary" />
-                    Recipes for tonight
+                    {sec.title || "Recipe ideas"}
                   </h2>
                   {trustSignal && (
                     <span className="text-xs text-aurora-muted font-medium">{trustSignal}</span>

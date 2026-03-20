@@ -62,7 +62,7 @@ export async function HomeSections() {
             >
               <h2 data-holmes-home-section-title className="text-xl font-bold mb-4 flex items-center gap-2">
                 <ChefHat className="w-6 h-6 text-aurora-primary" />
-                Recipes for tonight
+                {sec.title || "Recipe ideas"}
               </h2>
               <div
                 data-holmes-home-section-grid

@@ -11,6 +11,7 @@ import { formatPrice, toCents } from "@/lib/format-price";
 import { search, getStoreConfig } from "@/lib/aurora";
 import { getRecipeTitle, expandRecipeSearchQuery } from "@/lib/cart-intelligence";
 import { holmesSearch } from "@/lib/holmes-events";
+import { getTimeOfDay } from "@/lib/utils";
 import { isMissionBarDismissed } from "@/lib/mission-bar";
 import { MISSION_CATEGORY_PRIORITY, MISSION_FOCUS_QUERY } from "@/lib/mission-catalogue-config";
 import type { SearchHit } from "@/lib/aurora";
@@ -360,7 +361,11 @@ function CatalogueContent() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="font-display text-xl sm:text-2xl font-bold">
-                {recipeTitle ? `Make tonight: ${recipeTitle}` : "Products"}
+                {recipeTitle
+                  ? getTimeOfDay() === "evening"
+                    ? `Make tonight: ${recipeTitle}`
+                    : `Make: ${recipeTitle}`
+                  : "Products"}
               </h1>
               {recipeTitle && hits.length > 0 && catalogSlug && (
                 <button

@@ -12,6 +12,7 @@ import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
 import { getStoreConfig } from "@/lib/aurora";
 import type { SearchHit } from "@/lib/aurora";
+import { getTimeOfDay } from "@/lib/utils";
 
 interface RecipePageViewProps {
   recipeSlug: string;
@@ -123,7 +124,9 @@ export function RecipePageView({
     <div className="w-full space-y-8">
       <header>
         <h1 className="font-display text-2xl sm:text-3xl font-bold mb-2">
-          Make tonight: {recipe?.title ?? recipeTitle}
+          {getTimeOfDay() === "evening"
+            ? `Make tonight: ${recipe?.title ?? recipeTitle}`
+            : `Make: ${recipe?.title ?? recipeTitle}`}
         </h1>
         {recipe?.origin_tidbit && (
           <p className="text-aurora-muted text-sm sm:text-base max-w-2xl italic">
