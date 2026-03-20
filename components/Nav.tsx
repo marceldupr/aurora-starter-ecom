@@ -17,7 +17,7 @@ export function Nav() {
   const locationDisplay = location?.address ?? store?.name ?? "Select location";
 
   return (
-    <nav className="sticky top-0 z-[100] border-b border-aurora-border shadow-sm supports-[backdrop-filter]:bg-aurora-surface/90 supports-[backdrop-filter]:backdrop-blur-md bg-aurora-surface">
+    <nav className="sticky top-0 z-[200] border-b border-aurora-border shadow-sm supports-[backdrop-filter]:bg-aurora-surface/90 supports-[backdrop-filter]:backdrop-blur-md bg-aurora-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between gap-4 h-14">
           <div className="flex items-center gap-6 shrink-0">

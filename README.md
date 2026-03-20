@@ -47,7 +47,7 @@ A full-featured retail storefront for Aurora Studio. Showcases Aurora capabiliti
 - **Product Catalogue** - Featured, Bestsellers, New Arrivals, On Sale tabs; category filters. Mission-aware narrowing: categories reordered, "For your mission" section when confidence high.
 - **Product Detail** - Tabs (Details, Nutrition, Feedback), You May Also Like
 - **Basket & Checkout** - Multi-step checkout with delivery slot selection; ACME test payment flow (`/checkout/acme`, `/checkout/success`). Guardrail hints ("Egg noodles absorb sauce better than spaghetti").
-- **Holmes** - Mission inference, active mission bar, catalogue narrowing, guardrail rules. Cart **combo** discovery (`holmesCombosForCart`), selected combo on session, contextual “bundle for your cart” hints. One-click bundle checkout when enabled.
+- **Holmes** - Rules-based intent engine (no generative AI). Mission inference, active mission bar, catalogue narrowing, guardrail rules. Cart **combo** discovery (`holmesCombosForCart`), selected combo on session, contextual “bundle for your cart” hints. One-click bundle checkout when enabled.
 - **Promotions** - Store-specific offers and on-sale products
 - **Account** - Profile, Orders, Addresses (integrate Supabase Auth for full features)
 
@@ -90,7 +90,7 @@ For **delivery slots**, add vendors with `location` (PostGIS), create `vendor_ca
 
 ## Holmes
 
-Holmes is auto-injected when `NEXT_PUBLIC_AURORA_API_URL` and `NEXT_PUBLIC_TENANT_SLUG` are set. It captures behavioural signals and adapts the experience:
+Holmes is a rules-based intent engine. It uses deterministic and heuristic algorithms with configurable business rules. It does not use generative AI. Holmes is auto-injected when `NEXT_PUBLIC_AURORA_API_URL` and `NEXT_PUBLIC_TENANT_SLUG` are set. It captures behavioural signals and adapts the experience:
 
 - **Active mission bar** – Shows inferred mission (e.g. "Travel essentials", "Cook dinner") with confidence band. Dismiss or reset.
 - **Mission-first command surface** – "What are you trying to do?" with Start here chips; search is secondary.
