@@ -8,6 +8,8 @@ import { useAuth } from "./AuthProvider";
 import { useMissionAware } from "./MissionAwareHome";
 import { RecipeMissionHero } from "./RecipeMissionHero";
 import { getTimeOfDay } from "@/lib/utils";
+import { holmesMissionLockCombo } from "@/lib/holmes-events";
+import { shouldLockRecipeMissionForMissionPill } from "@/lib/holmes-mission-lock";
 
 const ICON_MAP: Record<string, typeof UtensilsCrossed> = {
   "Dinner in 20 mins": UtensilsCrossed,
@@ -103,6 +105,9 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
               <Link
                 key={action.label}
                 href={href}
+                onClick={() => {
+                  if (shouldLockRecipeMissionForMissionPill(action.label, href)) holmesMissionLockCombo();
+                }}
                 className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-aurora-surface border border-aurora-border shadow-sm hover:border-aurora-primary/40 hover:shadow-md transition-all text-sm font-semibold text-aurora-text"
               >
                 <Icon className="w-4 h-4 text-aurora-primary" />
@@ -113,6 +118,7 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
           {!quickActions.some((a) => a.label === "Recipe ideas") && (
             <Link
               href="/recipes"
+              onClick={() => holmesMissionLockCombo()}
               className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-aurora-surface border border-aurora-border shadow-sm hover:border-aurora-primary/40 hover:shadow-md transition-all text-sm font-semibold text-aurora-text"
             >
               <Sparkles className="w-4 h-4 text-aurora-primary" />

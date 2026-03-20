@@ -15,6 +15,8 @@ declare global {
       setCartCount: (n: number) => void;
       setCartItems: (items: Array<{ id: string; name: string; price: number }>) => void;
       setRecipeViewed?: (slug: string, title: string) => void;
+      setRecipeMissionLock?: (key: string) => void;
+      clearRecipeMissionLock?: () => void;
       getSessionId?: () => string;
       getMissionStartTimestamp?: () => number | null;
       addBundleToCart?: (
@@ -30,6 +32,7 @@ export function holmesRecipeView(slug: string, title: string): void {
   const s = String(slug || "").trim();
   const t = String(title || "").trim();
   if (!s || !t) return;
+  holmesMissionLockCombo();
   if (window.holmes?.setRecipeViewed) window.holmes.setRecipeViewed(s, t);
   document.dispatchEvent(
     new CustomEvent("holmes:recipeView", { detail: { slug: s, title: t } })
@@ -47,10 +50,26 @@ export function holmesAddBundle(
   );
 }
 
+const MEAL_SEARCH_LOCK_RE =
+  /dinner|lunch|breakfast|brunch|supper|recipe|cook\b|meal\b|paella|curry|pasta|steak|roast|ingredient|grill|bbq|beef|lamb|pork|salmon|chicken|fish/i;
+
+/** Lock recipe/combo mission on the server until reset (meal searches, mission pills). */
+export function holmesMissionLockCombo(): void {
+  if (typeof document === "undefined") return;
+  document.dispatchEvent(new CustomEvent("holmes:missionLock", { detail: { key: "combo_mission" } }));
+}
+
+/** Clear sticky recipe mission (e.g. mission bar reset). */
+export function holmesMissionLockClear(): void {
+  if (typeof document === "undefined") return;
+  document.dispatchEvent(new CustomEvent("holmes:missionLockClear"));
+}
+
 export function holmesSearch(query: string): void {
   if (typeof window === "undefined") return;
   const q = String(query || "").trim();
   if (!q) return;
+  if (MEAL_SEARCH_LOCK_RE.test(q)) holmesMissionLockCombo();
   if (window.holmes) window.holmes.setSearch(q);
   document.dispatchEvent(new CustomEvent("holmes:search", { detail: { q } }));
 }

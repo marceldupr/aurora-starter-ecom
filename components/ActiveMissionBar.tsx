@@ -6,6 +6,7 @@ import { X, RotateCcw } from "lucide-react";
 import { useMissionAware } from "./MissionAwareHome";
 import { useCart } from "@/components/CartProvider";
 import { MISSION_BAR_DISMISS_KEY, isMissionBarDismissed } from "@/lib/mission-bar";
+import { holmesMissionLockClear } from "@/lib/holmes-events";
 
 const BUNDLE_MISSION_KEYS = new Set([
   "recipe_mission",
@@ -64,6 +65,7 @@ export function ActiveMissionBar() {
   const handleReset = () => {
     setDismissed(false);
     setDismissedState(false);
+    holmesMissionLockClear();
     missionData?.refresh?.();
     window.dispatchEvent(new CustomEvent("holmes:missionBarReset"));
   };

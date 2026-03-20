@@ -161,7 +161,30 @@ export function getBasketCompositionSummary(cartItemNames: string[]): string {
   const parts: string[] = [];
 
   const hasMeal = lower.some((n) =>
-    ["pasta", "rice", "curry", "sauce", "meat", "fish", "chicken", "vegetables"].some((m) => n.includes(m))
+    [
+      "pasta",
+      "rice",
+      "curry",
+      "sauce",
+      "meat",
+      "beef",
+      "mince",
+      "steak",
+      "lamb",
+      "pork",
+      "fish",
+      "chicken",
+      "salmon",
+      "prawn",
+      "vegetables",
+      "potato",
+      "onion",
+      "garlic",
+      "cheese",
+      "feta",
+      "olive",
+      "egg",
+    ].some((m) => n.includes(m))
   );
   const hasBreakfast =
     lower.some((n) => ["bread", "cereal", "milk", "eggs", "coffee", "tea", "jam", "butter"].some((m) => n.includes(m)));
